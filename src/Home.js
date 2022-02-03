@@ -1,10 +1,23 @@
-import React, { Component } from "react";
+import React, { useCallback, useState } from "react";
 import axios from "axios";
 
 export default function Home() {
   const [tableData, setTableData] = React.useState([]);
   let [userData, setuserData] = React.useState(null);
-  let [showUser, setShowUser] = React.useState(false);
+  // let [showUser, setShowUser] = React.useState(false);
+  const useToggle = (initialState = false) => {
+    // Initialize the state
+    const [state, setState] = useState(initialState);
+
+    // Define and memorize toggler function in case we pass down the comopnent,
+    // This function change the boolean value to it's opposite value
+    const toggle = useCallback(() => setState((state) => !state), []);
+
+    return [state, toggle];
+  };
+
+  let [showUser, setShowUser] = useToggle();
+  console.log("what is it? ", showUser, "fn", setShowUser);
 
   React.useEffect(() => {
     axios
@@ -16,29 +29,30 @@ export default function Home() {
       .catch();
   }, []);
 
-  function deleteItem(id) {
-    console.log(id, "delete");
-  }
-  function GetSingleUser(id) {
+  function getUserData(id) {
     axios
       .get(`https://reqres.in/api/users/${id}`)
       .then((res) => {
         console.log(res.data.data, "get");
         setuserData(res.data.data);
-        setShowUser(true);
+        setShowUser();
       })
       .catch((err) => {
         console.log(err);
       });
-
+  }
+  function deleteItem(id) {
+    console.log(id, "delete");
+  }
+  function GetSingleUser(id) {
     return (
       <>
         <div className="card w-25">
           <img
             className="card-img-top"
             src={userData.avatar}
-            alt="Card image cap"
             height="250"
+            alt=""
           />
           <div className="card-body">
             <h5 className="card-title">
@@ -51,6 +65,11 @@ export default function Home() {
           </div>
           <ul className="list-group list-group-flush">
             <li className="list-group-item"> {userData.email}</li>
+            <li className="list-group-item">
+              <button className="btn btn-secondary" onClick={setShowUser}>
+                back to User List
+              </button>
+            </li>
           </ul>
         </div>
       </>
@@ -73,7 +92,7 @@ export default function Home() {
             </button>
             <button
               className="btn btn-primary"
-              onClick={() => GetSingleUser(x.id)}
+              onClick={() => getUserData(x.id)}
             >
               Deatail
             </button>
