@@ -1,5 +1,8 @@
 import React, { useCallback, useState } from "react";
 import axios from "axios";
+import { TablePagination } from 'react-pagination-table';
+import * as IoIcons from 'react-icons/io';
+import Loader, { Rings, Triangle } from "react-loader-spinner";
 
 export default function Home() {
   const [tableData, setTableData] = React.useState([]);
@@ -89,6 +92,7 @@ export default function Home() {
     );
   }
   function GetTable({ handleDelete }) {
+    const Header = ["Name", "Email", "Status","Type"];
     let x = tableData.map((x, index) => {
       return (
         <tr key={index}>
@@ -113,36 +117,67 @@ export default function Home() {
       );
     });
     return (
-      <>
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
+      // <>
+      //   <table className="table">
+      //     <thead>
+      //       <tr>
+      //         <th>Name</th>
+      //         <th>Email</th>
+      //         <th>Status</th>
+      //         <th>Action</th>
+      //       </tr>
+      //     </thead>
 
-          <tbody>{x}</tbody>
-        </table>
-      </>
+      //     <tbody>{x}</tbody>
+      //   </table>
+      // </>
+        <TablePagination
+            headers={ Header }
+            data={ tableData }
+            columns="fullname_en.email.status.name_en"
+            perPageItemCount={ 10 }
+            totalCount={ tableData.length }
+            className="col-12 table table-bordered  table-striped"
+            item="d-flex"
+            paginationClassName="d-flex justify-content-end align-items-center list-unstyled px-1 py-1 "
+            // arrayOption={ [["size", 'all', ' ']] }
+        />
     );
   }
 
   return (
     <>
-      <div className="Container vh-100">
-        <div className="row">
+    <div>
+        <div class="row pb-3">
+      <div className="col">
+        <div class="d-flex align-items-center h4 mb-0">
+        <span><IoIcons.IoMdPeople className="" /></span><span className="ml-1"> <label >USERLIST</label></span>
+        </div>
+      </div>
+    </div>
+    <hr class="my-0 ml-3" />
+        </div>
+      <div className="Container py-3">
+        {/* <div className="row">
           <div className="col-md-12 justify-content-center align-items-center">
             <h3>User {showUser ? "Details" : "List"}</h3>
           </div>
-        </div>
+        </div> */}
+        {tableData.length<=0?
+        <div className="loader d-flex justify-content-center">
+          <Triangle
+    heigth="100"
+    width="100"
+    color='red'
+    ariaLabel='loading'
+  />
+        </div>:
         <div className="row">
-          <div className=" d-flex justify-content-center">
+          <div className=" d-flex col-md-12 justify-content-center ">
             {showUser ? <GetSingleUser /> : <GetTable />}
           </div>
         </div>
+}
       </div>
     </>
   );
