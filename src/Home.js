@@ -20,11 +20,24 @@ export default function Home() {
   console.log("what is it? ", showUser, "fn", setShowUser);
 
   React.useEffect(() => {
+    // axios
+    //   .get("https://reqres.in/api/users?page=2")
+    //   .then((res) => {
+    //     console.log(res.data.data, "get");
+    //     setTableData(res.data.data);
+    //   })
+    //   .catch();
+
     axios
-      .get("https://reqres.in/api/users?page=2")
+      .post("http://119.82.96.67:3300/api/member/list", {
+        paginate: true,
+        limit: 500,
+        offset: 0,
+        sort: [{ key: "id", value: "desc" }],
+      })
       .then((res) => {
         console.log(res.data.data, "get");
-        setTableData(res.data.data);
+        setTableData(res.data.data.users);
       })
       .catch();
   }, []);
@@ -75,14 +88,13 @@ export default function Home() {
       </>
     );
   }
-  function GetTable() {
+  function GetTable({ handleDelete }) {
     let x = tableData.map((x, index) => {
       return (
         <tr key={index}>
-          <td>
-            {x.first_name} {x.last_name}
-          </td>
+          <td>{x.fullname_en}</td>
           <td>{x.email}</td>
+          <td>{x.status}</td>
           <td>
             <button
               className="btn btn-danger mx-1"
@@ -107,6 +119,7 @@ export default function Home() {
             <tr>
               <th>Name</th>
               <th>Email</th>
+              <th>Status</th>
               <th>Action</th>
             </tr>
           </thead>

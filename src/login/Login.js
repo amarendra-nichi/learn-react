@@ -35,7 +35,7 @@ export default function Login() {
   return (
     <div className="container ">
       <div className="row vh-100 justify-content-center align-items-center">
-        <div className="col-md-4 bg-primary py-3">
+        <div className="col-md-4  py-3">
           <form>
             <h3>Sign In</h3>
 
